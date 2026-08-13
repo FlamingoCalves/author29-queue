@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" fill="none">
+  <!-- Fonts: Fraunces + JetBrains Mono — use npm run brand:export for Stripe PNGs -->
+  <text x="0" y="98" font-family="'Fraunces', Georgia, serif" font-size="88" font-weight="700" fill="#f5f2ea">Author</text>
+  <text x="318" y="98" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="88" font-weight="500" fill="#e8a87c">29</text>
+  <text x="2" y="138" font-family="system-ui, sans-serif" font-size="18" font-weight="600" letter-spacing="0.35em" fill="#8a847c">PLATFORMS FOR BUILDERS</text>
+</svg>

@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/* Queue palette — warm rust / terracotta on cream-paper (not First Book navy, not Author29 copper) */
+:root {
+  --ink: #241c18;
+  --ink-deep: #1a1411;
+  --accent: #b54a32;
+  --accent-bright: #c96248;
+  --accent-light: #f6e4dc;
+  --accent-dark: #8c3523;
+  --paper: #f7f1e8;
+  --white: #fdfaf6;
+  --surface: #f3ebe1;
+  --muted: #6f645c;
+  --line: rgba(36, 28, 24, 0.12);
+  --green: #2f6b4a;
+  --red: #c45c5c;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-accent-light: var(--accent-light);
+  --color-accent-dark: var(--accent-dark);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-red: var(--red);
+  --color-green: var(--green);
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-a29-display {
+  font-family: var(--font-a29-display), Georgia, serif;
+}
+
+.font-a29-mono {
+  font-family: var(--font-a29-mono), ui-monospace, monospace;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
