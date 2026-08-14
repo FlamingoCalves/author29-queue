@@ -68,63 +68,116 @@ export function StagesBoard() {
         ))}
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-xl bg-paper">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-surface">
-                {["Person", "What they need", "Last touch", "Segment", ""].map((heading) => (
-                  <th
-                    key={heading}
-                    className="px-5 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted"
+      <div className="mt-5 space-y-3 md:hidden">
+        {filtered.map((contact) => {
+          const draft = draftFor(contact.id);
+          return (
+            <article
+              key={contact.id}
+              className="rounded-xl bg-paper px-4 py-3.5"
+            >
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <h2 className="text-sm font-medium text-ink">{contact.displayName}</h2>
+                {contact.dueToday ? (
+                  <span className="text-[10px] font-semibold uppercase tracking-wide text-accent">
+                    today
+                  </span>
+                ) : null}
+              </div>
+              <p className="mt-1.5 text-[13px] leading-relaxed text-muted wrap-break-word">
+                {contact.need}
+              </p>
+              <p className="mt-2 text-xs text-muted">{contact.lastTouch}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STAGE_META[contact.stage].chip}`}
+                >
+                  {contact.stage}
+                </span>
+                {draft ? (
+                  <Link
+                    href={`/review?id=${draft.id}`}
+                    className="inline-flex rounded-md border border-[rgba(36,28,24,0.12)] px-3 py-1.5 text-xs font-semibold text-accent"
                   >
-                    {heading}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((contact) => {
-                const draft = draftFor(contact.id);
-                return (
-                  <tr key={contact.id} className="border-t border-[rgba(36,28,24,0.06)]">
-                    <td className="px-5 py-3.5 text-sm font-medium text-ink">
-                      {contact.displayName}
-                      {contact.dueToday ? (
-                        <span className="ml-2 text-[10px] font-semibold uppercase tracking-wide text-accent">
-                          today
-                        </span>
-                      ) : null}
-                    </td>
-                    <td className="px-5 py-3.5 text-[13px] text-muted">{contact.need}</td>
-                    <td className="whitespace-nowrap px-5 py-3.5 text-[13px] text-muted">
-                      {contact.lastTouch}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STAGE_META[contact.stage].chip}`}
-                      >
-                        {contact.stage}
+                    Open draft
+                  </Link>
+                ) : (
+                  <span className="text-xs leading-snug text-muted">
+                    On the list · no draft yet
+                  </span>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="mt-5 hidden overflow-hidden rounded-xl bg-paper md:block">
+        <table className="w-full table-fixed border-collapse">
+          <thead>
+            <tr className="bg-surface">
+              <th className="w-[18%] px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted">
+                Person
+              </th>
+              <th className="w-[32%] px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted">
+                What they need
+              </th>
+              <th className="w-[18%] px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted">
+                Last touch
+              </th>
+              <th className="w-[16%] px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted">
+                Segment
+              </th>
+              <th className="w-[16%] px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted">
+                <span className="sr-only">Draft</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((contact) => {
+              const draft = draftFor(contact.id);
+              return (
+                <tr key={contact.id} className="border-t border-[rgba(36,28,24,0.06)]">
+                  <td className="px-4 py-3.5 align-top text-sm font-medium text-ink">
+                    {contact.displayName}
+                    {contact.dueToday ? (
+                      <span className="mt-1 block text-[10px] font-semibold uppercase tracking-wide text-accent">
+                        today
                       </span>
-                    </td>
-                    <td className="px-5 py-3.5">
-                      {draft ? (
-                        <Link
-                          href={`/review?id=${draft.id}`}
-                          className="rounded-md border border-[rgba(36,28,24,0.12)] px-3 py-1.5 text-xs font-semibold text-accent"
-                        >
-                          Open draft
-                        </Link>
-                      ) : (
-                        <span className="text-xs text-muted">On the list · no draft yet</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                    ) : null}
+                  </td>
+                  <td className="px-4 py-3.5 align-top text-[13px] leading-relaxed text-muted wrap-break-word">
+                    {contact.need}
+                  </td>
+                  <td className="px-4 py-3.5 align-top text-[13px] leading-snug text-muted wrap-break-word">
+                    {contact.lastTouch}
+                  </td>
+                  <td className="px-4 py-3.5 align-top">
+                    <span
+                      className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STAGE_META[contact.stage].chip}`}
+                    >
+                      {contact.stage}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3.5 align-top">
+                    {draft ? (
+                      <Link
+                        href={`/review?id=${draft.id}`}
+                        className="inline-flex rounded-md border border-[rgba(36,28,24,0.12)] px-3 py-1.5 text-xs font-semibold text-accent"
+                      >
+                        Open draft
+                      </Link>
+                    ) : (
+                      <span className="text-xs leading-snug text-muted">
+                        On the list · no draft yet
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );

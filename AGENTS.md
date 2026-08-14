@@ -3,7 +3,7 @@
 ## Stack
 - Next.js 15 App Router + React 19 + Tailwind v4
 - Public Author29 **interactive trial** (not a client-branded case study)
-- Hosting: Vercel project `author29-queue` at https://queue.author29.com (planned)
+- Hosting: Vercel project `author29-queue` at https://queue.author29.com
 - Mock data in `lib/demo` (per-browser localStorage). No Neon / Clerk / Mailchimp.
 
 ## Positioning
@@ -13,7 +13,7 @@
 - Sibling trials: **First Book** (inherited book) — https://firstbook.author29.com — and **Pilot** (workshop, not built yet). Separate palettes, same playable-trial pattern.
 - Ever-present `Author29Bar` in the root layout → `NEXT_PUBLIC_AUTHOR29_URL` (default https://author29.com).
 - **Host:** separate Vercel project on `queue.author29.com`. Do not use `try.author29.com` (reserved for Voice Studio). Do not iframe into author29.com — trials must not share that app’s runtime.
-- Author29 homepage should **link out** (Work card). Add that card in the `author29` repo only after this trial is playable locally and the user asks (M2).
+- Author29 homepage should **link out** (Work card) — do not iframe. Card lives in the `author29` repo.
 
 ## Operating loop
 See `docs/MILESTONES.md`. Default: feature branch → PR → Vercel preview → merge to `main` for production. Do not CLI-deploy to production unless asked.
@@ -48,8 +48,8 @@ See `docs/MILESTONES.md`. Default: feature branch → PR → Vercel preview → 
 - **Not this repo:** First Book (`FlamingoCalves/author29-first-book`), Author29 marketing, or `abide-pt-proposal`
 
 ## Deploy targets
-- **Now:** local `http://localhost:3020`
-- **Planned:** Vercel `author29-queue` at https://queue.author29.com; Author29.com Work card linking out
+- **Now:** local `http://localhost:3020` + Vercel `author29-queue` at https://queue.author29.com (also `author29-queue.vercel.app`)
+- **Planned:** Author29.com Work card linking out (separate `author29` repo)
 - **Not this repo:** https://author29.com (marketing), https://firstbook.author29.com (First Book), https://try.author29.com (Voice Studio)
 
 ## Product map

@@ -105,18 +105,22 @@ export function TodayHome() {
             {dueToday.map((contact) => (
               <li
                 key={contact.id}
-                className="flex flex-wrap items-center gap-3 border-b border-[rgba(36,28,24,0.06)] px-5 py-3.5"
+                className="flex flex-col gap-2 border-b border-[rgba(36,28,24,0.06)] px-4 py-3.5 sm:flex-row sm:items-start sm:gap-4 sm:px-5"
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-ink">{contact.displayName}</p>
-                  <p className="mt-0.5 text-xs text-muted">{contact.need}</p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-muted wrap-break-word">
+                    {contact.need}
+                  </p>
                 </div>
-                <p className="text-xs text-muted">{contact.lastTouch}</p>
-                <span
-                  className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STAGE_META[contact.stage].chip}`}
-                >
-                  {contact.stage}
-                </span>
+                <div className="flex flex-wrap items-center gap-2 sm:max-w-[11rem] sm:shrink-0 sm:flex-col sm:items-end">
+                  <p className="text-xs leading-snug text-muted">{contact.lastTouch}</p>
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STAGE_META[contact.stage].chip}`}
+                  >
+                    {contact.stage}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
