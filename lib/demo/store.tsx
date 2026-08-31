@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { createCaptureState, type CaptureRequest } from "./capture";
 import { createSeedState } from "./seed";
 import type { DemoState, MessageStatus } from "./types";
 
@@ -46,20 +47,32 @@ function loadState(): DemoState {
   }
 }
 
-export function DemoStoreProvider({ children }: { children: ReactNode }) {
+export function DemoStoreProvider({
+  children,
+  capture = { enabled: false, scene: null, messageId: null },
+}: {
+  children: ReactNode;
+  capture?: CaptureRequest;
+}) {
   const [state, setState] = useState<DemoState>(createSeedState);
   const [hydrated, setHydrated] = useState(false);
   const [revision, setRevision] = useState(0);
 
   useEffect(() => {
-    setState(loadState());
+    if (capture.enabled) {
+      setState(createCaptureState(capture));
+    } else {
+      setState(loadState());
+    }
     setHydrated(true);
-  }, []);
+    // Primitive fields only — `capture` is a new object each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [capture.enabled, capture.scene, capture.messageId]);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || capture.enabled) return;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [hydrated, state]);
+  }, [capture.enabled, hydrated, state]);
 
   const update = useCallback((updater: (prev: DemoState) => DemoState) => {
     setState((prev) => updater(prev));

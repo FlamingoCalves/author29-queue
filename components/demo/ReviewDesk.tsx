@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { MAIL_SERVICE, OPERATOR, STUDIO } from "@/lib/demo/brand";
+import { usePresented } from "@/lib/demo/presented";
 import { STAGE_META } from "@/lib/demo/seed";
 import { useDemoStore } from "@/lib/demo/store";
 
 export function ReviewDesk() {
   const store = useDemoStore();
+  const { capturing, studio, operator, mail, stageLabel } = usePresented();
   const searchParams = useSearchParams();
   const fromQuery = searchParams.get("id");
   const [selectedId, setSelectedId] = useState<string | null>(fromQuery);
@@ -67,12 +68,12 @@ export function ReviewDesk() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <p className="text-xs font-bold uppercase tracking-widest text-accent">
-        Human review · {MAIL_SERVICE.name}-first
+        Human review · {mail.name}-first
       </p>
       <h1 className="font-display mt-1 text-3xl font-bold text-ink">Review before send</h1>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
         Each draft is written from what this person actually needs — last touch,
-        segment, the particular pause. You still approve. {STUDIO.short} never
+        segment, the particular pause. You still approve. {studio.short} never
         blasts the list.
       </p>
 
@@ -83,7 +84,7 @@ export function ReviewDesk() {
               Drafts waiting
             </p>
             <p className="mt-1 text-sm font-semibold text-ink">
-              {store.queuedCount} queued · {store.sentCount} simulated
+              {store.queuedCount} queued · {store.sentCount} {capturing ? "sent" : "simulated"}
             </p>
           </div>
           <ul>
@@ -116,7 +117,7 @@ export function ReviewDesk() {
                             : "bg-[#f3e6d4] text-[#8a5a28]"
                       }`}
                     >
-                      {message.status === "sent" ? "simulated" : message.status}
+                      {message.status === "sent" ? (capturing ? "sent" : "simulated") : message.status}
                     </span>
                   </button>
                 </li>
@@ -130,9 +131,9 @@ export function ReviewDesk() {
             <div className="mb-4 flex items-center gap-3 rounded-lg border border-[rgba(181,74,50,0.28)] bg-accent-light px-4 py-3 text-[13px] text-accent-dark">
               <span>
                 <strong className="text-ink">Human review required.</strong> Nothing
-                sends automatically. Approve every message before it would leave{" "}
-                {STUDIO.short} through {MAIL_SERVICE.name} — this trial only
-                simulates send.
+                sends automatically. Approve every message before it leaves{" "}
+                {studio.short} through {mail.name}
+                {capturing ? "." : " — this trial only simulates send."}
               </span>
             </div>
 
@@ -146,7 +147,7 @@ export function ReviewDesk() {
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[rgba(36,28,24,0.08)] px-6 py-5">
                 <div>
                   <p className="text-xs text-muted">
-                    Draft · {selectedContact.stage} · {MAIL_SERVICE.name} segment:{" "}
+                    Draft · {stageLabel(selectedContact.stage)} · {mail.name} segment:{" "}
                     {selectedContact.segment}
                   </p>
                   <h2 className="font-display mt-1 text-[22px] text-ink">
@@ -156,7 +157,7 @@ export function ReviewDesk() {
                 </div>
                 {selected.status === "sent" ? (
                   <span className="rounded-full bg-[#dcfce7] px-4 py-1.5 text-xs font-semibold text-[#2f6b4a]">
-                    ✓ Simulated send
+                    {capturing ? "✓ Sent" : "✓ Simulated send"}
                   </span>
                 ) : selected.status === "skipped" ? (
                   <span className="rounded-full bg-surface px-4 py-1.5 text-xs font-semibold text-muted">
@@ -221,12 +222,12 @@ export function ReviewDesk() {
                 )}
                 <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted">
                   <span>
-                    {MAIL_SERVICE.name} segment:{" "}
+                    {mail.name} segment:{" "}
                     <strong className="text-ink">{selectedContact.segment}</strong>
                   </span>
                   <span>Send window: {selected.sendWindow}</span>
                   <span>1 recipient · first name only</span>
-                  <span>From {OPERATOR.name}</span>
+                  <span>From {operator.name}</span>
                 </div>
               </div>
 
@@ -264,7 +265,7 @@ export function ReviewDesk() {
                         onClick={simulateSend}
                         className="rounded-md bg-accent px-6 py-2.5 text-sm font-medium text-white hover:bg-accent-dark"
                       >
-                        Looks good — simulate send
+                        {capturing ? "Looks good — approve & send" : "Looks good — simulate send"}
                       </button>
                       <button
                         type="button"

@@ -1,6 +1,8 @@
 import { Fraunces, JetBrains_Mono, Outfit, Source_Serif_4 } from "next/font/google";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Author29Bar } from "@/components/Author29Bar";
+import { SiteChrome } from "@/components/SiteChrome";
 import "./globals.css";
 
 const sans = Outfit({
@@ -53,7 +55,9 @@ export default function RootLayout({
       className={`${sans.variable} ${display.variable} ${a29Display.variable} ${a29Mono.variable}`}
     >
       <body>
-        <Author29Bar />
+        <Suspense fallback={<Author29Bar />}>
+          <SiteChrome />
+        </Suspense>
         {children}
       </body>
     </html>

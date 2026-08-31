@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { MAIL_SERVICE, STUDIO } from "@/lib/demo/brand";
+import { usePresented } from "@/lib/demo/presented";
 import { STAGE_META } from "@/lib/demo/seed";
 import { useDemoStore } from "@/lib/demo/store";
 import { STAGES, type RelationshipStage } from "@/lib/demo/types";
@@ -14,6 +14,7 @@ function isStage(value: string | null): value is RelationshipStage {
 
 export function StagesBoard() {
   const store = useDemoStore();
+  const { capturing, studio, mail, stageLabel } = usePresented();
   const searchParams = useSearchParams();
   const fromQuery = searchParams.get("stage");
   const active: RelationshipStage | "All" = isStage(fromQuery) ? fromQuery : "All";
@@ -48,22 +49,30 @@ export function StagesBoard() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <p className="text-xs font-bold uppercase tracking-widest text-accent">
-        {MAIL_SERVICE.name}-first · the living book
+        {mail.name}-first · the living book
       </p>
       <h1 className="font-display mt-1 text-3xl font-bold text-ink">Lead stages</h1>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-        Everyone on the {STUDIO.short} list, by the segment they already sit in.
+        Everyone on the {studio.short} list, by the segment they already sit in.
         Today is a slice of this board — not a separate spreadsheet.
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
-        <FilterChip href="/stages" selected={active === "All"} label={`All ${store.contacts.length}`} />
+        <FilterChip
+          href={capturing ? "/stages?capture=1" : "/stages"}
+          selected={active === "All"}
+          label={`All ${store.contacts.length}`}
+        />
         {STAGES.map((stage) => (
           <FilterChip
             key={stage}
-            href={`/stages?stage=${encodeURIComponent(stage)}`}
+            href={
+              capturing
+                ? `/stages?capture=1&stage=${encodeURIComponent(stage)}`
+                : `/stages?stage=${encodeURIComponent(stage)}`
+            }
             selected={active === stage}
-            label={`${stage} ${counts[stage]}`}
+            label={`${stageLabel(stage)} ${counts[stage]}`}
           />
         ))}
       </div>
@@ -92,11 +101,11 @@ export function StagesBoard() {
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STAGE_META[contact.stage].chip}`}
                 >
-                  {contact.stage}
+                  {stageLabel(contact.stage)}
                 </span>
                 {draft ? (
                   <Link
-                    href={`/review?id=${draft.id}`}
+                    href={capturing ? `/review?capture=1&id=${draft.id}` : `/review?id=${draft.id}`}
                     className="inline-flex rounded-md border border-[rgba(36,28,24,0.12)] px-3 py-1.5 text-xs font-semibold text-accent"
                   >
                     Open draft
@@ -156,13 +165,13 @@ export function StagesBoard() {
                     <span
                       className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STAGE_META[contact.stage].chip}`}
                     >
-                      {contact.stage}
+                      {stageLabel(contact.stage)}
                     </span>
                   </td>
                   <td className="px-4 py-3.5 align-top">
                     {draft ? (
                       <Link
-                        href={`/review?id=${draft.id}`}
+                        href={capturing ? `/review?capture=1&id=${draft.id}` : `/review?id=${draft.id}`}
                         className="inline-flex rounded-md border border-[rgba(36,28,24,0.12)] px-3 py-1.5 text-xs font-semibold text-accent"
                       >
                         Open draft

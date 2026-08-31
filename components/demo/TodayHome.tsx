@@ -2,21 +2,23 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { MAIL_SERVICE, OPERATOR, STUDIO } from "@/lib/demo/brand";
+import { CAPTURE_DATE_LABEL } from "@/lib/demo/capture";
+import { usePresented } from "@/lib/demo/presented";
 import { STAGE_META } from "@/lib/demo/seed";
 import { useDemoStore } from "@/lib/demo/store";
 import { STAGES, type RelationshipStage } from "@/lib/demo/types";
 import { MailchimpPanel, MailchimpSheet } from "./MailchimpMock";
 
-function kindLabel(kind: string) {
-  if (kind === "inquiry") return "New inquiry follow-up";
-  if (kind === "quote") return "Quote sitting";
-  if (kind === "project") return "In-project note";
+function kindLabel(kind: string, capturing: boolean) {
+  if (kind === "inquiry") return capturing ? "New consult follow-up" : "New inquiry follow-up";
+  if (kind === "quote") return capturing ? "Plan sitting" : "Quote sitting";
+  if (kind === "project") return capturing ? "Active-care note" : "In-project note";
   return "Re-engage";
 }
 
 export function TodayHome() {
   const store = useDemoStore();
+  const { capturing, studio, operator, mail, stageLabel } = usePresented();
   const [mailOpen, setMailOpen] = useState(false);
 
   const counts = useMemo(() => {
@@ -41,23 +43,25 @@ export function TodayHome() {
     return <div className="px-4 py-16 text-center text-sm text-muted">Loading trial state…</div>;
   }
 
-  const dateLabel = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "short",
-    day: "numeric",
-  });
+  const dateLabel = capturing
+    ? CAPTURE_DATE_LABEL
+    : new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "short",
+        day: "numeric",
+      });
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-accent">
-            {STUDIO.name} · {OPERATOR.firstName}&apos;s book
+            {studio.name} · {operator.firstName}&apos;s book
           </p>
           <h1 className="font-display mt-1 text-3xl font-bold text-ink">Outreach — Today</h1>
           <p className="mt-2 text-sm text-muted">
             {dateLabel} · {dueToday.length} need a touch · {draftsWaiting.length} drafts
-            waiting · on {MAIL_SERVICE.name}
+            waiting · on {mail.name}
           </p>
         </div>
         <button
@@ -65,7 +69,7 @@ export function TodayHome() {
           onClick={() => setMailOpen(true)}
           className="rounded-md border border-[rgba(36,28,24,0.12)] bg-paper px-4 py-2 text-sm font-semibold text-accent"
         >
-          Open {MAIL_SERVICE.name} →
+          Open {mail.name} →
         </button>
       </div>
 
@@ -73,7 +77,11 @@ export function TodayHome() {
         {STAGES.map((stage) => (
           <Link
             key={stage}
-            href={`/stages?stage=${encodeURIComponent(stage)}`}
+            href={
+              capturing
+                ? `/stages?capture=1&stage=${encodeURIComponent(stage)}`
+                : `/stages?stage=${encodeURIComponent(stage)}`
+            }
             className="rounded-xl border-t-[3px] bg-paper px-5 py-4"
             style={{
               borderTopColor:
@@ -87,8 +95,8 @@ export function TodayHome() {
             }}
           >
             <p className="font-display text-3xl leading-none text-ink">{counts[stage]}</p>
-            <p className="mt-2 text-sm font-semibold text-ink">{stage}</p>
-            <p className="mt-1 text-[11px] text-muted">{STAGE_META[stage].segment} segment</p>
+            <p className="mt-2 text-sm font-semibold text-ink">{stageLabel(stage)}</p>
+            <p className="mt-1 text-[11px] text-muted">{stageLabel(stage)} segment</p>
           </Link>
         ))}
       </div>
@@ -97,7 +105,10 @@ export function TodayHome() {
         <div className="overflow-hidden rounded-xl bg-paper">
           <div className="flex items-center justify-between border-b border-[rgba(36,28,24,0.08)] px-5 py-4">
             <p className="text-sm font-semibold text-ink">Who needs a touch</p>
-            <Link href="/stages" className="text-xs font-semibold text-accent">
+            <Link
+              href={capturing ? "/stages?capture=1" : "/stages"}
+              className="text-xs font-semibold text-accent"
+            >
               View stages →
             </Link>
           </div>
@@ -118,7 +129,7 @@ export function TodayHome() {
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${STAGE_META[contact.stage].chip}`}
                   >
-                    {contact.stage}
+                    {stageLabel(contact.stage)}
                   </span>
                 </div>
               </li>
@@ -142,9 +153,9 @@ export function TodayHome() {
                     <p className="text-sm font-medium text-ink">
                       {contact?.displayName ?? "Unknown"}
                     </p>
-                    <p className="text-xs text-muted">{kindLabel(message.kind)}</p>
+                    <p className="text-xs text-muted">{kindLabel(message.kind, capturing)}</p>
                     <Link
-                      href={`/review?id=${message.id}`}
+                      href={capturing ? `/review?capture=1&id=${message.id}` : `/review?id=${message.id}`}
                       className="mt-1 inline-block text-xs font-semibold text-accent"
                     >
                       Review draft →

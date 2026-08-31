@@ -7,7 +7,7 @@
 - Mock data in `lib/demo` (per-browser localStorage). No Neon / Clerk / Mailchimp.
 
 ## Positioning
-- Product name: **Queue**. Sample studio: **Cedar & Field**. Operator: **Elena Voss**. Never “Abide”, never “Handoff”, never “Jordan Hale”, never Maya / Northshore.
+- Product name: **Queue**. Sample studio: **Cedar & Field**. Operator: **Elena Voss**. Never “Abide”, never “Handoff”, never “Jordan Hale”. Live trial never Maya / Northshore. `?capture=1` may overlay **Northshore Clinic** / Reese Quinn so portfolio shots pair with First Book.
 - Queue is the ongoing outreach motion: who needs a touch today, relationship stages, draft outreach, human approve-before-send. The playable sample is kitchen + bath design; the pattern is universal (clinic check-ins, sales pipeline, advisor households, agency accounts).
 - Homepage is a start screen → enter the trial. Not a proposal recap. Not an inherited-book onboarding tool (that is **First Book**).
 - Sibling trials: **First Book** (inherited book) — https://firstbook.author29.com — and **Pilot** (workshop, not built yet). Separate palettes, same playable-trial pattern.
@@ -62,6 +62,13 @@ See `docs/MILESTONES.md`. Default: feature branch → PR → Vercel preview → 
 - Stored in `localStorage` key `a29-queue-v3` in **this browser only**
 - Working the queue does not affect other visitors
 - **Reset trial** clears this browser’s copy
+
+## Portfolio capture
+- `?capture=1` is presentation-only: hide Author29 bar, trial/reset chrome, freeze seed, overlay Northshore Clinic. It does not skip auth (there is none), write a database, or call paid APIs.
+- Allowlisted `scene` values: `today`, `stages`, `draft`, `approve`. Allowlisted `id` values are seed message ids (`msg-priya`, …). Unknown values fall back.
+- Capture skips `localStorage` and sets `noindex`.
+- App root: `[data-portfolio-capture="app"]`. Ready after hydrate: `[data-portfolio-ready]`.
+- Scene list: `portfolio.scenes.json`. From this repo: `npm run build && npm run portfolio:capture` writes PNGs to `../portfolio-shots/author29-queue`.
 
 ## Palette
 Warm rust / terracotta on cream-paper. Tokens in `app/globals.css` and `lib/demo/brand.ts`. Do not use First Book navy (`#2f4a6e`) or Author29 copper as the product UI (the top bar stays Author29 black).
